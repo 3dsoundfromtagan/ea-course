@@ -1,5 +1,6 @@
 /*Have to redo:
-*Construct*/
+*Constructor
+* ==*/
 #pragma once
 
 #include <vector>
@@ -19,16 +20,19 @@ class LongNum {
 public:
 	//Constructors and deconstructor
 	LongNum();
-	LongNum(int &new_value);
-	LongNum(long long &new_value);
-	LongNum(unsigned long long &new_value);
+	//Auxiliary method for numerical constructors
+	void Init(unsigned long long new_value);
+	LongNum(const unsigned long long &new_value);
+	LongNum(const long long &new_value);
+	LongNum(const int &new_value);
 	LongNum(char* &new_value);
-	LongNum(std::string &new_value);
+	LongNum(const std::string &new_value);
 	~LongNum();
 	
 	//Getters
 	std:: vector<int> getValue() const;
-	bool getSign() const;
+	Sign getSign() const;
+	void printSign() const;
 	
 	//Setters
     void setValue(const std:: vector <int> &new_value);
@@ -47,68 +51,51 @@ public:
 
 private:
 	std:: vector<int> value;
-	/*//TRUE is positive, FALSE is negative
-	bool sign;*/		
 	Sign _sign;												
 };
 
 LongNum:: LongNum() {
 	value.clear();
-	_sign = POSITIVE;
+	_sign = ZERO;
 }
 
-LongNum:: LongNum(int &new_value) {
-	if (!new_value) {
+void LongNum:: Init(unsigned long long tmp) {
+	std:: cerr << "in unsigned constructor, input data = " << tmp << "\n";
+	if (!tmp) {
+		std:: cerr << "tmp is equal to zero\n";
 		value.clear();
+		_sign = ZERO;
+	}
+	else {
+		std:: cerr << "tmp is not equal to zero\n";
 		_sign = POSITIVE;
 	}
-	if (new_value < 0) {
+	do {
+		value.push_back(tmp % BASE);
+		tmp /= BASE;
+	} while (tmp);
+	remove_lead_zeros();
+}
+
+LongNum:: LongNum(const unsigned long long &new_value) {
+	unsigned long long tmp = new_value;
+	Init(tmp);
+}
+
+LongNum:: LongNum(const long long &new_value) {
+	long long tmp = new_value;
+	if (tmp >= 0) {
+		std:: cerr << "in long long; tmp = " << tmp << std:: endl;
+		Init((unsigned long long)(tmp));
+	}
+	else {
+		Init((unsigned long long)(-tmp));
 		_sign = NEGATIVE;
-		new_value = -new_value;
 	}
-	else {
-		_sign = POSITIVE;
-	}
-	do {
-		value.push_back(new_value % BASE);
-		new_value /= BASE;
-	} while (new_value);
-	remove_lead_zeros();
+	
 }
 
-LongNum:: LongNum(unsigned long long &new_value) {
-	if (!new_value) {
-		value.clear();
-		_sign = POSITIVE;
-	}
-	else {
-		_sign = POSITIVE;
-	}
-	do {
-		value.push_back(new_value % BASE);
-		new_value /= BASE;
-	} while (new_value);
-	remove_lead_zeros();
-}
-
-LongNum:: LongNum(long long &new_value) {
-	if (!new_value) {
-		value.clear();
-		_sign = POSITIVE;
-	}
-	if (new_value < 0) {
-		_sign = NEGATIVE;
-		new_value = -new_value;
-	}
-	else {
-		_sign = POSITIVE;
-	}
-	do {
-		value.push_back(new_value % BASE);
-		new_value /= BASE;
-	} while (new_value);
-	remove_lead_zeros();
-}
+LongNum:: LongNum(const int &new_value): LongNum:: LongNum ((const long long)new_value) {}
 
 /*LongNum:: LongNum(char* &new_value) {									//DOESN'T WORK
 	const int ASIZE = sizeof(new_value) / sizeof (*new_value);
@@ -121,24 +108,25 @@ LongNum:: LongNum(long long &new_value) {
 	remove_lead_zeros();
 }*/
 
-LongNum:: LongNum(std::string &new_value) {								
-	if (!new_value.length()) {
+LongNum:: LongNum(const std::string &new_value) {	
+	std:: string tmp = new_value;							
+	if (!tmp.length()) {
 		_sign = POSITIVE;
 		value.clear();
 	}
 	else {
-		if (new_value[0] == '-') {
-			new_value = new_value.substr(1);
+		if (tmp[0] == '-') {
+			tmp = tmp.substr(1);
 			_sign = NEGATIVE;
 		}
 		else {
 			_sign = POSITIVE;
 		}
-		for (long long i = (long long)new_value.length(); i > 0; i -= 9) {
+		for (long long i = (long long)tmp.length(); i > 0; i -= 9) {
 			if (i < 9)
-				value.push_back (atoi (new_value.substr (0, i).c_str()));
+				value.push_back (atoi (tmp.substr (0, i).c_str()));
 			else
-				value.push_back (atoi (new_value.substr (i-9, 9).c_str()));
+				value.push_back (atoi (tmp.substr (i-9, 9).c_str()));
 		}
 	}
 	remove_lead_zeros();
@@ -153,9 +141,21 @@ std::vector<int> LongNum:: getValue() const {
 	return value;
 }
 
-bool LongNum:: getSign() const {
+LongNum:: Sign LongNum:: getSign() const {
 		return _sign;
 } 
+
+void LongNum:: printSign() const {
+	if (_sign == POSITIVE) {
+		std:: cerr << "POSITIVE\n";
+	}
+	if (_sign == NEGATIVE) {
+		std:: cerr << "NEGATIVE\n";
+	}
+	if (_sign == ZERO) {
+		std:: cerr << "ZERO\n";
+	}
+}
 
 void LongNum:: setValue(const std:: vector <int> &new_value) {
 	value = new_value;
@@ -188,7 +188,7 @@ void LongNum:: printLN() {
 }
 
 std:: ostream& operator << (std:: ostream &os, const LongNum &rhs) {
-	if (rhs.getSign() == false) {
+	if (rhs.getSign() == LongNum:: Sign:: NEGATIVE) {
 		os << "-";
 	}
 	if (rhs.getValue().empty()) {
