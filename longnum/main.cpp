@@ -8,7 +8,7 @@
 using namespace std;
 int main () {
 	string s1 = "-000123456789001";
-	string s2 = "-123456789006";
+	string s2 = "-123456789001";
 	LongNum a(s1);
 	LongNum b(s2);
 	cout << (a == b) << endl;

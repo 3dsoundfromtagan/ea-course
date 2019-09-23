@@ -1,3 +1,5 @@
+/*Have to redo:
+*Construct*/
 #pragma once
 
 #include <vector>
@@ -7,6 +9,13 @@
 #define BASE 1000000000													
 
 class LongNum {
+	
+	enum Sign {
+		POSITIVE,
+		NEGATIVE,
+		ZERO,
+	};	
+	
 public:
 	//Constructors and deconstructor
 	LongNum();
@@ -23,7 +32,7 @@ public:
 	
 	//Setters
     void setValue(const std:: vector <int> &new_value);
-    void setSign(const bool &new_sign);
+    void setSign(const Sign &new_sign);
 	
 	void remove_lead_zeros();
 	
@@ -38,26 +47,27 @@ public:
 
 private:
 	std:: vector<int> value;
-	//TRUE is positive, FALSE is negative
-	bool sign;															
+	/*//TRUE is positive, FALSE is negative
+	bool sign;*/		
+	Sign _sign;												
 };
 
 LongNum:: LongNum() {
 	value.clear();
-	sign = true;
+	_sign = POSITIVE;
 }
 
 LongNum:: LongNum(int &new_value) {
 	if (!new_value) {
 		value.clear();
-		sign = true;
+		_sign = POSITIVE;
 	}
 	if (new_value < 0) {
-		sign = false;
+		_sign = NEGATIVE;
 		new_value = -new_value;
 	}
 	else {
-		sign = true;
+		_sign = POSITIVE;
 	}
 	do {
 		value.push_back(new_value % BASE);
@@ -69,10 +79,10 @@ LongNum:: LongNum(int &new_value) {
 LongNum:: LongNum(unsigned long long &new_value) {
 	if (!new_value) {
 		value.clear();
-		sign = true;
+		_sign = POSITIVE;
 	}
 	else {
-		sign = true;
+		_sign = POSITIVE;
 	}
 	do {
 		value.push_back(new_value % BASE);
@@ -84,14 +94,14 @@ LongNum:: LongNum(unsigned long long &new_value) {
 LongNum:: LongNum(long long &new_value) {
 	if (!new_value) {
 		value.clear();
-		sign = true;
+		_sign = POSITIVE;
 	}
 	if (new_value < 0) {
-		sign = false;
+		_sign = NEGATIVE;
 		new_value = -new_value;
 	}
 	else {
-		sign = true;
+		_sign = POSITIVE;
 	}
 	do {
 		value.push_back(new_value % BASE);
@@ -113,16 +123,16 @@ LongNum:: LongNum(long long &new_value) {
 
 LongNum:: LongNum(std::string &new_value) {								
 	if (!new_value.length()) {
-		sign = true;
+		_sign = POSITIVE;
 		value.clear();
 	}
 	else {
 		if (new_value[0] == '-') {
 			new_value = new_value.substr(1);
-			sign = false;
+			_sign = NEGATIVE;
 		}
 		else {
-			sign = true;
+			_sign = POSITIVE;
 		}
 		for (long long i = (long long)new_value.length(); i > 0; i -= 9) {
 			if (i < 9)
@@ -144,15 +154,15 @@ std::vector<int> LongNum:: getValue() const {
 }
 
 bool LongNum:: getSign() const {
-		return sign;
+		return _sign;
 } 
 
 void LongNum:: setValue(const std:: vector <int> &new_value) {
 	value = new_value;
 }
 
-void LongNum:: setSign (const bool &new_sign) {
-	sign = new_sign;
+void LongNum:: setSign (const Sign &new_sign) {
+	_sign = new_sign;
 }
 
 void LongNum:: remove_lead_zeros () {
@@ -162,7 +172,7 @@ void LongNum:: remove_lead_zeros () {
 }
 	
 void LongNum:: printLN() {
-	if (sign == false) {
+	if (_sign == false) {
 		std:: cout << "-";
 	}
 	if (getValue().empty()) {
