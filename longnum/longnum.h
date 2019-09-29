@@ -1,5 +1,5 @@
 /*Have to redo:
-*Constructor
+*Constructor char*
 * ==*/
 #pragma once
 
@@ -20,12 +20,17 @@ class LongNum {
 public:
 	//Constructors and deconstructor
 	LongNum();
+	
 	//Auxiliary method for numerical constructors
-	void Init(unsigned long long new_value);
+	void Init_Num(unsigned long long new_value);
+	
+	//Auxiliary method for string constructor
+	void Init_Str(std:: string new_value);
+	
 	LongNum(const unsigned long long &new_value);
 	LongNum(const long long &new_value);
 	LongNum(const int &new_value);
-	LongNum(char* &new_value);
+	LongNum(const char* &new_value);
 	LongNum(const std::string &new_value);
 	~LongNum();
 	
@@ -54,12 +59,7 @@ private:
 	Sign _sign;												
 };
 
-LongNum:: LongNum() {
-	value.clear();
-	_sign = ZERO;
-}
-
-void LongNum:: Init(unsigned long long tmp) {
+void LongNum:: Init_Num(unsigned long long tmp) {
 	std:: cerr << "in unsigned constructor, input data = " << tmp << "\n";
 	if (!tmp) {
 		std:: cerr << "tmp is equal to zero\n";
@@ -77,39 +77,7 @@ void LongNum:: Init(unsigned long long tmp) {
 	remove_lead_zeros();
 }
 
-LongNum:: LongNum(const unsigned long long &new_value) {
-	unsigned long long tmp = new_value;
-	Init(tmp);
-}
-
-LongNum:: LongNum(const long long &new_value) {
-	long long tmp = new_value;
-	if (tmp >= 0) {
-		std:: cerr << "in long long; tmp = " << tmp << std:: endl;
-		Init((unsigned long long)(tmp));
-	}
-	else {
-		Init((unsigned long long)(-tmp));
-		_sign = NEGATIVE;
-	}
-	
-}
-
-LongNum:: LongNum(const int &new_value): LongNum:: LongNum ((const long long)new_value) {}
-
-/*LongNum:: LongNum(char* &new_value) {									//DOESN'T WORK
-	const int ASIZE = sizeof(new_value) / sizeof (*new_value);
-	std:: cout << ASIZE;
-	if (new_value == NULL){
-		sign = true;
-		value.clear();
-	}
-	
-	remove_lead_zeros();
-}*/
-
-LongNum:: LongNum(const std::string &new_value) {	
-	std:: string tmp = new_value;							
+void LongNum:: Init_Str(std:: string tmp) {							
 	if (!tmp.length()) {
 		_sign = POSITIVE;
 		value.clear();
@@ -130,6 +98,41 @@ LongNum:: LongNum(const std::string &new_value) {
 		}
 	}
 	remove_lead_zeros();
+}
+
+LongNum:: LongNum() {
+	value.clear();
+	_sign = ZERO;
+}
+
+LongNum:: LongNum(const unsigned long long &new_value) {
+	unsigned long long tmp = new_value;
+	Init_Num(tmp);
+}
+
+LongNum:: LongNum(const long long &new_value) {
+	long long tmp = new_value;
+	if (tmp >= 0) {
+		std:: cerr << "in long long; tmp = " << tmp << std:: endl;
+		Init_Num((unsigned long long)(tmp));
+	}
+	else {
+		Init_Num((unsigned long long)(-tmp));
+		_sign = NEGATIVE;
+	}
+	
+}
+
+LongNum:: LongNum(const int &new_value): LongNum:: LongNum ((const long long)new_value) {}
+
+LongNum:: LongNum(const char* &new_value) {									//DOESN'T WORK
+	std:: string tmp = (std::string)new_value;
+	Init_Str(tmp);
+}
+
+LongNum:: LongNum(const std::string &new_value) {	
+	std:: string tmp = new_value;
+	Init_Str(tmp);
 }
 
 LongNum:: ~LongNum() {
