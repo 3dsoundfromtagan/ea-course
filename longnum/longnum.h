@@ -1,6 +1,3 @@
-/*Have to redo:
-*Constructor char*
-* ==*/
 #pragma once
 
 #include <vector>
@@ -51,8 +48,11 @@ public:
 	friend std:: ostream& operator << (std:: ostream &os, const LongNum &longnum);
 	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
 	friend LongNum operator + (const LongNum &lhs, const LongNum &rhs);
-
-
+	friend bool operator !=(const LongNum& lhs, const LongNum& rhs);
+	friend bool operator <(const LongNum& lhs, const LongNum& rhs); 
+	friend bool operator <=(const LongNum& lhs, const LongNum& rhs); 
+	friend bool operator >(const LongNum& lhs, const LongNum& rhs);
+	friend bool operator >=(const LongNum& lhs, const LongNum& rhs);
 
 
 private:
@@ -63,14 +63,14 @@ private:
 
 template < typename T >
 void LongNum:: Init_Num(unsigned long long tmp, T base) {
-	std:: cerr << "in unsigned constructor, input data = " << tmp << "\n";
+	//std:: cerr << "in unsigned constructor, input data = " << tmp << "\n";
 	if (!tmp) {
-		std:: cerr << "tmp is equal to zero\n";
+		//std:: cerr << "tmp is equal to zero\n";
 		value.clear();
 		_sign = ZERO;
 	}
 	else {
-		std:: cerr << "tmp is not equal to zero\n";
+		//std:: cerr << "tmp is not equal to zero\n";
 		_sign = POSITIVE;
 	}
 	do {
@@ -118,7 +118,7 @@ LongNum:: LongNum(const long long &new_value) {
 	long long tmp = new_value;
 	unsigned base = BASE;
 	if (tmp >= 0) {
-		std:: cerr << "in long long; tmp = " << tmp << std:: endl;
+		//std:: cerr << "in long long; tmp = " << tmp << std:: endl;
 		Init_Num((unsigned long long)(tmp), base);
 	}
 	else {
@@ -140,18 +140,12 @@ LongNum:: LongNum(const std::string &new_value) {
 	Init_Str(tmp);
 }
 
-LongNum:: ~LongNum() {
-	
-}
+LongNum:: ~LongNum() {}
 
 
-std::vector<int> LongNum:: getValue() const {
-	return value;
-}
+std::vector<int> LongNum:: getValue() const {return value;}
 
-LongNum:: Sign LongNum:: getSign() const {
-		return _sign;
-} 
+LongNum:: Sign LongNum:: getSign() const {return _sign;} 
 
 void LongNum:: printSign() const {
 	if (_sign == POSITIVE) {
@@ -165,13 +159,9 @@ void LongNum:: printSign() const {
 	}
 }
 
-void LongNum:: setValue(const std:: vector <int> &new_value) {
-	value = new_value;
-}
+void LongNum:: setValue(const std:: vector <int> &new_value) {value = new_value;}
 
-void LongNum:: setSign (const Sign &new_sign) {
-	_sign = new_sign;
-}
+void LongNum:: setSign (const Sign &new_sign) {_sign = new_sign;}
 
 void LongNum:: remove_lead_zeros () {
 	while (( value.size() > 1 ) && (value.back() == 0) ) {
@@ -245,6 +235,23 @@ bool operator == (const LongNum &lhs, const LongNum &rhs) {
 	}
 	return true;
 }
+
+bool operator !=(const LongNum& lhs, const LongNum& rhs) {return !(lhs == rhs);}
+
+bool operator < (const LongNum& lhs, const LongNum& rhs) {
+       
+}
+/*bool operator <=(const LongNum& lhs, const LongNum& rhs) {
+        return (lhs < rhs || lhs == rhs);
+}
+ 
+bool operator >(const LongNum& lhs, const LongNum& rhs) {
+        return !(lhs <= rhs);
+}
+ 
+bool operator >=(const LongNum& lhs, const LongNum& rhs) {
+        return !(lhs < rhs);
+}*/
 
 /*LongNum operator + (const LongNum &lhs, const LongNum &rhs) {
 		
