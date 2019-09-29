@@ -17,6 +17,13 @@ class LongNum {
 public:
 	//Constructors and deconstructor
 	LongNum();
+	LongNum(const LongNum &new_value);
+	LongNum(const unsigned long long &new_value);
+	LongNum(const long long &new_value);
+	LongNum(const int &new_value);
+	LongNum(const char* &new_value);
+	LongNum(const std::string &new_value);
+	~LongNum();
 	
 	//Auxiliary method for numerical constructors
 	template < typename T >
@@ -25,16 +32,12 @@ public:
 	//Auxiliary method for string constructor
 	void Init_Str(std:: string new_value);
 	
-	LongNum(const unsigned long long &new_value);
-	LongNum(const long long &new_value);
-	LongNum(const int &new_value);
-	LongNum(const char* &new_value);
-	LongNum(const std::string &new_value);
-	~LongNum();
+	
 	
 	//Getters
 	std:: vector<int> getValue() const;
 	Sign getSign() const;
+	long long getSize() const;
 	void printSign() const;
 	
 	//Setters
@@ -47,12 +50,18 @@ public:
 	
 	friend std:: ostream& operator << (std:: ostream &os, const LongNum &longnum);
 	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
-	friend LongNum operator + (const LongNum &lhs, const LongNum &rhs);
 	friend bool operator !=(const LongNum& lhs, const LongNum& rhs);
+	
 	friend bool operator <(const LongNum& lhs, const LongNum& rhs); 
 	friend bool operator <=(const LongNum& lhs, const LongNum& rhs); 
 	friend bool operator >(const LongNum& lhs, const LongNum& rhs);
 	friend bool operator >=(const LongNum& lhs, const LongNum& rhs);
+	
+	LongNum operator +() const;
+	friend LongNum operator +(const LongNum &lhs, const LongNum &rhs);
+	
+	LongNum operator -() const;
+	friend LongNum operator -(const LongNum &lhs, const LongNum &rhs);
 
 
 private:
@@ -82,7 +91,7 @@ void LongNum:: Init_Num(unsigned long long tmp, T base) {
 
 void LongNum:: Init_Str(std:: string tmp) {							
 	if (!tmp.length()) {
-		_sign = POSITIVE;
+		_sign = ZERO;
 		value.clear();
 	}
 	else {
@@ -106,6 +115,11 @@ void LongNum:: Init_Str(std:: string tmp) {
 LongNum:: LongNum() {
 	value.clear();
 	_sign = ZERO;
+}
+
+LongNum:: LongNum(const LongNum &new_value) {
+	value = new_value.getValue();
+	_sign = new_value.getSign();
 }
 
 LongNum:: LongNum(const unsigned long long &new_value) {
@@ -147,6 +161,7 @@ std::vector<int> LongNum:: getValue() const {return value;}
 
 LongNum:: Sign LongNum:: getSign() const {return _sign;} 
 
+long long LongNum:: getSize() const {return value.size();}
 void LongNum:: printSign() const {
 	if (_sign == POSITIVE) {
 		std:: cerr << "POSITIVE\n";
@@ -203,6 +218,7 @@ std:: ostream& operator << (std:: ostream &os, const LongNum &rhs) {
 }
 
 bool operator == (const LongNum &lhs, const LongNum &rhs) {
+	
 	if (lhs.getSign()!= rhs.getSign()) {
 		return false;
 	}
@@ -239,7 +255,36 @@ bool operator == (const LongNum &lhs, const LongNum &rhs) {
 bool operator !=(const LongNum& lhs, const LongNum& rhs) {return !(lhs == rhs);}
 
 bool operator < (const LongNum& lhs, const LongNum& rhs) {
-       
+		if (lhs == rhs) {return false;}
+		if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+			if (lhs.getSize() != rhs.getSize()) {
+				return (lhs.getSize() < rhs.getSize());
+			}
+			else {
+				for (long long i = 0; i < lhs.getSize(); ++i) {
+					if (lhs.value[i] != rhs.value[i]) {
+						return (lhs.value[i] < rhs.value[i]);
+					}
+				}
+				return true;
+			}
+		}
+		
+		if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && ((rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO))){
+			return true;
+		}
+		
+		if (((lhs.getSign() == LongNum:: Sign:: NEGATIVE) || (lhs.getSign() == LongNum:: Sign:: ZERO)) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+			return true;
+		}
+	   
+		if ((lhs.getSign() == LongNum:: Sign:: ZERO) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) return true;
+		if ((lhs.getSign() == LongNum:: Sign:: ZERO) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) return false;
+		
+		else {
+			return ((-rhs) < (-lhs));
+		}
+
 }
 /*bool operator <=(const LongNum& lhs, const LongNum& rhs) {
         return (lhs < rhs || lhs == rhs);
@@ -257,4 +302,13 @@ bool operator >=(const LongNum& lhs, const LongNum& rhs) {
 		
 }*/
 
+LongNum LongNum:: operator +() const{
+	return LongNum(*this);
+}
 
+LongNum LongNum:: operator -() const{
+	LongNum tmp(*this);
+	if (tmp.getSign() == LongNum:: Sign:: NEGATIVE) tmp._sign = LongNum:: Sign:: POSITIVE;
+	if (tmp.getSign() == LongNum:: Sign:: POSITIVE) tmp._sign = LongNum:: Sign:: NEGATIVE;
+	return tmp;
+}

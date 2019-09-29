@@ -31,13 +31,19 @@ int main () {
 	LongNum long_char(my_char);
 	cerr << "long_char = " << long_char << endl;
 	
-	string my_string = "1234567890";
+	string my_string;
 	LongNum long_string(my_string);
 	cerr << "long_string = " << long_string << endl;
 	
 	cerr << "long_int == long_ll is " << (long_int == long_ll) << endl;
 	cerr << "long_empty != long_ull is " << (long_empty != long_ull) << endl;
+	cerr << "long_ull < long_string is " << (long_ull < long_string) << endl;
 	
+	
+	
+	
+	//WHY DOES IT WORK??
+	//cout << (long_ull == my_ll);
 	/*char* m1 = (char*)malloc(N * sizeof(char));
 	m1[0] = '-';
 	for (int i = 1; i < N; ++i) {
@@ -50,7 +56,7 @@ int main () {
 	LongNum b(i1);
 	a.printSign();
 	cout << "a = " << a << " , b = " << b << endl;
-	cout << "a == b is " << (a == b) << endl;
-	free(m1);*/
+	cout << "a == b is " << (a == b) << endl;*/
+	free(my_char);
 	return 0;
 }
