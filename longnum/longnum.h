@@ -22,7 +22,8 @@ public:
 	LongNum();
 	
 	//Auxiliary method for numerical constructors
-	void Init_Num(unsigned long long new_value);
+	template < typename T >
+	void Init_Num(unsigned long long new_value, T base);
 	
 	//Auxiliary method for string constructor
 	void Init_Str(std:: string new_value);
@@ -59,7 +60,9 @@ private:
 	Sign _sign;												
 };
 
-void LongNum:: Init_Num(unsigned long long tmp) {
+
+template < typename T >
+void LongNum:: Init_Num(unsigned long long tmp, T base) {
 	std:: cerr << "in unsigned constructor, input data = " << tmp << "\n";
 	if (!tmp) {
 		std:: cerr << "tmp is equal to zero\n";
@@ -71,8 +74,8 @@ void LongNum:: Init_Num(unsigned long long tmp) {
 		_sign = POSITIVE;
 	}
 	do {
-		value.push_back(tmp % BASE);
-		tmp /= BASE;
+		value.push_back(tmp % base);
+		tmp /= base;
 	} while (tmp);
 	remove_lead_zeros();
 }
@@ -107,17 +110,19 @@ LongNum:: LongNum() {
 
 LongNum:: LongNum(const unsigned long long &new_value) {
 	unsigned long long tmp = new_value;
-	Init_Num(tmp);
+	unsigned base = BASE;
+	Init_Num(tmp, base);
 }
 
 LongNum:: LongNum(const long long &new_value) {
 	long long tmp = new_value;
+	unsigned base = BASE;
 	if (tmp >= 0) {
 		std:: cerr << "in long long; tmp = " << tmp << std:: endl;
-		Init_Num((unsigned long long)(tmp));
+		Init_Num((unsigned long long)(tmp), base);
 	}
 	else {
-		Init_Num((unsigned long long)(-tmp));
+		Init_Num((unsigned long long)(-tmp), base);
 		_sign = NEGATIVE;
 	}
 	

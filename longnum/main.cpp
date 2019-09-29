@@ -14,11 +14,11 @@ int main () {
 	}
 	string s1 = "-000123456789001";
 	string s2 = "1234567890";
-	int i1 = -97531;
+	long long i1 = -97531;
 	LongNum a(m1);
 	LongNum b(i1);
 	a.printSign();
-	cout << "a = " << a << endl;
+	cout << "a = " << a << " , b = " << b << endl;
 	cout << "a == b is " << (a == b) << endl;
 	free(m1);
 	return 0;
