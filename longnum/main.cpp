@@ -36,6 +36,7 @@ int main () {
 	cerr << "long_string = " << long_string << endl;
 	
 	cerr << "long_int == long_ll is " << (long_int == long_ll) << endl;
+	cerr << "long_int == unsigned long long is " << (long_int == my_ull) << endl;
 	cerr << "long_empty != long_ull is " << (long_empty != long_ull) << endl;
 	cerr << "long_ull < long_string is " << (long_ull < long_string) << endl;
 	

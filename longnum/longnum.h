@@ -30,9 +30,7 @@ public:
 	void Init_Num(unsigned long long new_value, T base);
 	
 	//Auxiliary method for string constructor
-	void Init_Str(std:: string new_value);
-	
-	
+	void Init_Str(std:: string new_value);	
 	
 	//Getters
 	std:: vector<int> getValue() const;
@@ -49,13 +47,19 @@ public:
 	void printLN();
 	
 	friend std:: ostream& operator << (std:: ostream &os, const LongNum &longnum);
-	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
-	friend bool operator !=(const LongNum& lhs, const LongNum& rhs);
 	
-	friend bool operator <(const LongNum& lhs, const LongNum& rhs); 
-	friend bool operator <=(const LongNum& lhs, const LongNum& rhs); 
-	friend bool operator >(const LongNum& lhs, const LongNum& rhs);
-	friend bool operator >=(const LongNum& lhs, const LongNum& rhs);
+	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend bool operator == (const LongNum &lhs, const T &rhs);
+	//template < typename T >
+	//friend bool operator == (const T &lhs, const LongNum &rhs);
+	
+	friend bool operator !=(const LongNum &lhs, const LongNum &rhs);
+	
+	friend bool operator <(const LongNum &lhs, const LongNum &rhs); 
+	friend bool operator <=(const LongNum &lhs, const LongNum &rhs); 
+	friend bool operator >(const LongNum &lhs, const LongNum &rhs);
+	friend bool operator >=(const LongNum &lhs, const LongNum &rhs);
 	
 	LongNum operator +() const;
 	friend LongNum operator +(const LongNum &lhs, const LongNum &rhs);
@@ -72,14 +76,11 @@ private:
 
 template < typename T >
 void LongNum:: Init_Num(unsigned long long tmp, T base) {
-	//std:: cerr << "in unsigned constructor, input data = " << tmp << "\n";
 	if (!tmp) {
-		//std:: cerr << "tmp is equal to zero\n";
 		value.clear();
 		_sign = ZERO;
 	}
 	else {
-		//std:: cerr << "tmp is not equal to zero\n";
 		_sign = POSITIVE;
 	}
 	do {
@@ -132,7 +133,6 @@ LongNum:: LongNum(const long long &new_value) {
 	long long tmp = new_value;
 	unsigned base = BASE;
 	if (tmp >= 0) {
-		//std:: cerr << "in long long; tmp = " << tmp << std:: endl;
 		Init_Num((unsigned long long)(tmp), base);
 	}
 	else {
@@ -144,7 +144,7 @@ LongNum:: LongNum(const long long &new_value) {
 
 LongNum:: LongNum(const int &new_value): LongNum:: LongNum ((const long long)new_value) {}
 
-LongNum:: LongNum(const char* &new_value) {									//DOESN'T WORK
+LongNum:: LongNum(const char* &new_value) {								
 	std:: string tmp = (std::string)new_value;
 	Init_Str(tmp);
 }
@@ -252,6 +252,12 @@ bool operator == (const LongNum &lhs, const LongNum &rhs) {
 	return true;
 }
 
+template < typename T >
+bool operator == (const LongNum &lhs, const T &rhs) {
+	return (lhs == LongNum(rhs));
+}
+
+
 bool operator !=(const LongNum& lhs, const LongNum& rhs) {return !(lhs == rhs);}
 
 bool operator < (const LongNum& lhs, const LongNum& rhs) {
@@ -286,17 +292,17 @@ bool operator < (const LongNum& lhs, const LongNum& rhs) {
 		}
 
 }
-/*bool operator <=(const LongNum& lhs, const LongNum& rhs) {
+bool operator <=(const LongNum &lhs, const LongNum &rhs) {
         return (lhs < rhs || lhs == rhs);
 }
  
-bool operator >(const LongNum& lhs, const LongNum& rhs) {
+bool operator >(const LongNum &lhs, const LongNum &rhs) {
         return !(lhs <= rhs);
 }
  
-bool operator >=(const LongNum& lhs, const LongNum& rhs) {
+bool operator >=(const LongNum &lhs, const LongNum &rhs) {
         return !(lhs < rhs);
-}*/
+}
 
 /*LongNum operator + (const LongNum &lhs, const LongNum &rhs) {
 		
