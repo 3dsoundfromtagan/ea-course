@@ -51,15 +51,39 @@ public:
 	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
 	template < typename T >
 	friend bool operator == (const LongNum &lhs, const T &rhs);
-	//template < typename T >
-	//friend bool operator == (const T &lhs, const LongNum &rhs);
+	template < typename T >
+	friend bool operator == (const T &lhs, const LongNum &rhs);
 	
 	friend bool operator !=(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend bool operator != (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend bool operator != (const T &lhs, const LongNum &rhs);
 	
 	friend bool operator <(const LongNum &lhs, const LongNum &rhs); 
+	template < typename T >
+	friend bool operator < (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend bool operator < (const T &lhs, const LongNum &rhs);
+	
 	friend bool operator <=(const LongNum &lhs, const LongNum &rhs); 
+	template < typename T >
+	friend bool operator <= (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend bool operator <= (const T &lhs, const LongNum &rhs);
+	
 	friend bool operator >(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend bool operator > (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend bool operator > (const T &lhs, const LongNum &rhs);
+	
 	friend bool operator >=(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend bool operator >= (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend bool operator >= (const T &lhs, const LongNum &rhs);
+	
 	
 	LongNum operator +() const;
 	friend LongNum operator +(const LongNum &lhs, const LongNum &rhs);
@@ -184,8 +208,8 @@ void LongNum:: remove_lead_zeros () {
 	}
 }
 	
-void LongNum:: printLN() {
-	if (_sign == false) {
+/*void LongNum:: printLN() {
+	if (_sign == LongNum:: Sign::NEGATIVE) {
 		std:: cout << "-";
 	}
 	if (getValue().empty()) {
@@ -198,7 +222,7 @@ void LongNum:: printLN() {
 		printf ("%09d", getValue()[i]);
 	}
 	return;
-}
+}*/
 
 std:: ostream& operator << (std:: ostream &os, const LongNum &rhs) {
 	if (rhs.getSign() == LongNum:: Sign:: NEGATIVE) {
@@ -257,8 +281,20 @@ bool operator == (const LongNum &lhs, const T &rhs) {
 	return (lhs == LongNum(rhs));
 }
 
-
+template < typename T >
+bool operator == (const T &lhs, const LongNum &rhs) {
+	return (LongNum(lhs) == rhs);
+}
+	
+	
 bool operator !=(const LongNum& lhs, const LongNum& rhs) {return !(lhs == rhs);}
+
+template < typename T >
+bool operator != (const LongNum &lhs, const T &rhs) {return !(lhs == LongNum(rhs));}
+
+template < typename T >
+bool operator != (const T &lhs, const LongNum &rhs) {return !(LongNum(lhs) == rhs);}
+
 
 bool operator < (const LongNum& lhs, const LongNum& rhs) {
 		if (lhs == rhs) {return false;}
@@ -292,21 +328,48 @@ bool operator < (const LongNum& lhs, const LongNum& rhs) {
 		}
 
 }
+
+template < typename T >
+bool operator < (const LongNum &lhs, const T &rhs) {return (lhs < LongNum(rhs));}
+
+template < typename T >
+bool operator < (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) < rhs);}
+
+
+
 bool operator <=(const LongNum &lhs, const LongNum &rhs) {
         return (lhs < rhs || lhs == rhs);
 }
+template < typename T >
+bool operator <= (const LongNum &lhs, const T &rhs) {return (lhs <= LongNum(rhs));}
+
+template < typename T >
+bool operator <= (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) <= rhs);}
+
+
+
  
 bool operator >(const LongNum &lhs, const LongNum &rhs) {
         return !(lhs <= rhs);
 }
+template < typename T >
+bool operator > (const LongNum &lhs, const T &rhs) {return (lhs > LongNum(rhs));}
+
+template < typename T >
+bool operator > (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) > rhs);}
+
  
 bool operator >=(const LongNum &lhs, const LongNum &rhs) {
         return !(lhs < rhs);
 }
+template < typename T >
+bool operator >= (const LongNum &lhs, const T &rhs) {return (lhs >= LongNum(rhs));}
 
-/*LongNum operator + (const LongNum &lhs, const LongNum &rhs) {
-		
-}*/
+template < typename T >
+bool operator >= (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) >= rhs);}
+
+
+
 
 LongNum LongNum:: operator +() const{
 	return LongNum(*this);
