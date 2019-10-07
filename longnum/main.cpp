@@ -4,10 +4,10 @@
 #include <cstdlib>
 
 #define N 11
-#define DEFAULT_EXAMPLE -2
+#define DEFAULT_EXAMPLE 5
 #define DEFAULT_UNSIGNED_EXAMPLE 1
-#define EX_STRING "-4"
-//косяк в унарном минусе
+#define EX_STRING "2"
+//косяк в унарном минусе или операторе меньше
 using namespace std;
 int main () {
 	LongNum long_empty;
@@ -75,10 +75,12 @@ int main () {
 	
 	cerr << endl;
 	
-	//cerr << "long_ll  + long_string is " << long_ll + long_string << endl;
+	cerr << "long_ll + long_string is " << long_ll + long_string << endl;
 	
-	LongNum tmp = -long_ull;
+	//unary minus check
+	/*LongNum tmp = long_ull;
 	tmp.printSign();
+	(-tmp).printSign();*/
 
 	free(my_char);
 	return 0;

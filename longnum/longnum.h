@@ -18,7 +18,7 @@ class LongNum {
 public:
 	//Constructors and deconstructor
 	LongNum();
-	LongNum(const LongNum &new_value);
+//	LongNum(const LongNum &new_value);
 	LongNum(const unsigned long long &new_value);
 	LongNum(const long long &new_value);
 	LongNum(const int &new_value);
@@ -79,20 +79,30 @@ public:
 	template < typename T >
 	friend bool operator > (const T &lhs, const LongNum &rhs);
 	
-	friend bool operator >=(const LongNum &lhs, const LongNum &rhs);
+	friend bool operator>=(const LongNum &lhs, const LongNum &rhs);
 	template < typename T >
-	friend bool operator >= (const LongNum &lhs, const T &rhs);
+	friend bool operator>= (const LongNum &lhs, const T &rhs);
 	template < typename T >
-	friend bool operator >= (const T &lhs, const LongNum &rhs);
+	friend bool operator>= (const T &lhs, const LongNum &rhs);
 	
 	
-	LongNum operator +() const;
-	friend LongNum operator +(const LongNum &lhs, const LongNum &rhs);
+	LongNum operator+() const;
+	
+	//Prefix increment
+	const friend LongNum operator++ (LongNum &rhs);
+	
+	//Postfix increment
+	const friend LongNum operator++ (LongNum &rhs, int);
+	
+	friend LongNum operator+(const LongNum &lhs, const LongNum &rhs);
 	
 	
 	
-	LongNum operator -() const;
-	friend LongNum operator -(const LongNum &lhs, const LongNum &rhs);
+	
+	
+	LongNum operator-() const;
+	
+	friend LongNum operator-(const LongNum &lhs, const LongNum &rhs);
 
 
 private:
@@ -145,10 +155,10 @@ LongNum:: LongNum() {
 	_sign = ZERO;
 }
 
-LongNum:: LongNum(const LongNum &new_value) {
+/*LongNum:: LongNum(const LongNum &new_value) {
 	value = new_value.getValue();
 	_sign = new_value.getSign();
-}
+}*/
 
 LongNum:: LongNum(const unsigned long long &new_value) {
 	unsigned long long tmp = new_value;
@@ -189,6 +199,7 @@ std::vector<int> LongNum:: getValue() const {return value;}
 LongNum:: Sign LongNum:: getSign() const {return _sign;} 
 
 long long LongNum:: getSize() const {return value.size();}
+
 void LongNum:: printSign() const {
 	if (_sign == POSITIVE) {
 		std:: cerr << "POSITIVE\n";
@@ -327,6 +338,7 @@ bool operator < (const LongNum& lhs, const LongNum& rhs) {
 		if ((lhs.getSign() == LongNum:: Sign:: ZERO) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) return false;
 		
 		else {
+			(-rhs).printSign();//??
 			return ((-rhs) < (-lhs));
 		}
 
@@ -379,50 +391,41 @@ LongNum LongNum:: operator +() const{
 
 //Redo with BASE template
 LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
-	LongNum tmp_rhs;
-	LongNum tmp_lhs;
+	LongNum tmp;
 	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
-		//std:: cerr << "lhs = " << lhs << ", rhs = " << rhs << "\n";
 		//carry flag
 		int carry = 0;
 		//temporary values
 		int val_left = 0;
 		int val_right = 0;
-		//std:: cerr << "\n lhs.size = " << lhs.getSize() << "\t rhs.size = " << rhs.getSize() << "\n";
 		for (long long i = 0; (i < (long long)std:: max(lhs.getSize(), rhs.getSize())) || (carry); ++i) {
-				if (i == (long long)tmp_rhs.getSize()) {tmp_rhs.value.push_back(0);}
+				if (i == (long long)tmp.getSize()) {tmp.value.push_back(0);}
 				if (i < lhs.getSize()) {val_left = lhs.value[i];}
 				if (i < rhs.getSize()) {val_right = rhs.value[i];}
-				tmp_rhs.value[i] = tmp_rhs.value[i] + carry + val_left + val_right;
-				carry = (tmp_rhs.value[i] >= BASE);
+				tmp.value[i] = tmp.value[i] + carry + val_left + val_right;
+				carry = (tmp.value[i] >= BASE);
 				if (carry) {
-					tmp_rhs.value[i] -= BASE;
+					tmp.value[i] -= BASE;
 				}
 				val_left = 0;
 				val_right = 0;
 		
 		}
-		tmp_rhs._sign = LongNum:: Sign:: POSITIVE;
-		return tmp_rhs;
+		tmp._sign = LongNum:: Sign:: POSITIVE;
+		return tmp;
 	}
-	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {
-		tmp_rhs = -rhs;
-		/*tmp_lhs = -(lhs);
-		tmp_rhs.printSign();*/
-		std:: cout << "\n tmp rhs = " << tmp_rhs  << std::endl;
-		/*LongNum tmp = tmp_rhs + tmp_lhs;		
-		tmp.setSign(LongNum:: Sign:: NEGATIVE);
-		return tmp;*/
-	}
-	/*if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {return (-(lhs) + rhs);}
+	/*if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return -(-(lhs) + -(rhs));	}
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {return (-(lhs) + rhs);}
 	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (lhs + -(rhs));}
 	if ((lhs.getSign() == LongNum:: Sign:: ZERO) && ( (rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: POSITIVE))) {return rhs;}
-	//if (( (lhs.getSign() == LongNum:: Sign:: POSITIVE) || (lhs.getSign() == LongNum:: Sign:: NEGATIVE) ) && (rhs.getSign() == LongNum:: Sign:: ZERO)) {return lhs;}	
-	else {return lhs;}*/
+	if (( (lhs.getSign() == LongNum:: Sign:: POSITIVE) || (lhs.getSign() == LongNum:: Sign:: NEGATIVE) ) && (rhs.getSign() == LongNum:: Sign:: ZERO)) {return lhs;}	
+	else {return (-lhs);}*/
 	
 	
 }
 
+
+//Doesn't work correctly in 'return (-obj)' rows
 LongNum LongNum:: operator -() const{
 	LongNum tmp(*this);
 
