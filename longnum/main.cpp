@@ -4,15 +4,16 @@
 #include <cstdlib>
 
 #define N 11
-#define DEFAULT_EXAMPLE 1234567890
-#define EX_STRING "-1234567890"
-
+#define DEFAULT_EXAMPLE -2
+#define DEFAULT_UNSIGNED_EXAMPLE 1
+#define EX_STRING "-4"
+//косяк в унарном минусе
 using namespace std;
 int main () {
 	LongNum long_empty;
 	cerr << "long_empty = " << long_empty << endl;
 	
-	unsigned long long my_ull = DEFAULT_EXAMPLE;
+	unsigned long long my_ull = DEFAULT_UNSIGNED_EXAMPLE;
 	LongNum long_ull(my_ull);
 	cerr << "long_ull = " << long_ull << endl;
 	
@@ -50,7 +51,7 @@ int main () {
 	
 	cerr << endl;
 	
-	cerr << "long_ull < long_string is " << (long_ull < long_string) << endl;
+	//cerr << "long_ll < long_string is " << (long_ll < long_string) << endl;
 	cerr << "long_int < unsigned long long is " << (long_int < my_ull) << endl;
 	cerr << "unsigned long long < long_string is " << (my_ull < long_string) << endl;
 	
@@ -74,21 +75,11 @@ int main () {
 	
 	cerr << endl;
 	
-	//WHY DOES IT WORK??
-	//cout << (long_ull == my_ll);
-	/*char* m1 = (char*)malloc(N * sizeof(char));
-	m1[0] = '-';
-	for (int i = 1; i < N; ++i) {
-		m1[i] = '9' - 2*(i - 1);
-	}
-	string s1 = "-000123456789001";
-	string s2 = "1234567890";
-	long long i1 = -97531;
-	LongNum a(m1);
-	LongNum b(i1);
-	a.printSign();
-	cout << "a = " << a << " , b = " << b << endl;
-	cout << "a == b is " << (a == b) << endl;*/
+	//cerr << "long_ll  + long_string is " << long_ll + long_string << endl;
+	
+	LongNum tmp = -long_ull;
+	tmp.printSign();
+
 	free(my_char);
 	return 0;
 }
