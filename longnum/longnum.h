@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <string>
+#include <cstring>
 #include <algorithm>
 
 //Each element contains 9 digits
@@ -25,6 +25,9 @@ public:
 	LongNum(const char* &new_value);
 	LongNum(const std::string &new_value);
 	~LongNum();
+	
+	//Copy assignment
+	LongNum &operator = (const LongNum & rhs);
 	
 	//Auxiliary method for numerical constructors
 	template < typename T >
@@ -128,7 +131,7 @@ void LongNum:: Init_Num(unsigned long long tmp, T base) {
 }
 
 void LongNum:: Init_Str(std:: string tmp) {							
-	if (!tmp.length()) {
+	if (!tmp.length() || (tmp.length() == 1 && tmp[0] == '0')) {
 		_sign = ZERO;
 		value.clear();
 	}
@@ -192,6 +195,16 @@ LongNum:: LongNum(const std::string &new_value) {
 }
 
 LongNum:: ~LongNum() {}
+
+LongNum & LongNum:: operator = (const LongNum & rhs) {
+	if (this == &rhs) {
+        return *this;
+    }
+
+    value = rhs.value;
+	_sign = rhs._sign;
+    return *this;
+}
 
 
 std::vector<int> LongNum:: getValue() const {return value;}
@@ -388,7 +401,6 @@ LongNum LongNum:: operator +() const{
 	return LongNum(*this);
 }
 
-//Redo with BASE template
 LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
 	LongNum tmp;
 	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
@@ -413,12 +425,12 @@ LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
 		tmp._sign = LongNum:: Sign:: POSITIVE;
 		return tmp;
 	}
-	/*if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return -(-(lhs) + -(rhs));	}
-	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {return (-(lhs) + rhs);}
-	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (lhs + -(rhs));}
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) { return -(-(lhs) + -(rhs));	}
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {	return (rhs - lhs);}
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (lhs - rhs);}
 	if ((lhs.getSign() == LongNum:: Sign:: ZERO) && ( (rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: POSITIVE))) {return rhs;}
-	if (( (lhs.getSign() == LongNum:: Sign:: POSITIVE) || (lhs.getSign() == LongNum:: Sign:: NEGATIVE) ) && (rhs.getSign() == LongNum:: Sign:: ZERO)) {return lhs;}	
-	else {return (-lhs);}*/
+	else {return lhs;}	
+
 	
 	
 }
@@ -427,6 +439,7 @@ LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
 	
 }
 */
+
 LongNum LongNum:: operator -() const{
 	LongNum tmp(*this);
 
@@ -435,7 +448,43 @@ LongNum LongNum:: operator -() const{
 		return tmp;
 	}
 	if (tmp.getSign() == LongNum:: Sign:: POSITIVE) {
-		 tmp._sign = LongNum:: Sign:: NEGATIVE;
-		 return tmp;
+		tmp._sign = LongNum:: Sign:: NEGATIVE;
+		return tmp;
 	}
+	else {return tmp;}
+}
+
+LongNum operator -(const LongNum &lhs, const LongNum &rhs) {
+	if (lhs == rhs) {return LongNum(0);}
+	LongNum tmp(lhs);
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+		if (lhs > rhs) {
+			//carry flag
+			int carry = 0;
+			//temporary values
+			int val_right = 0;
+			for (long long i = 0; (i < rhs.getSize()) || (carry); ++i) {
+				if (i < rhs.getSize()) {val_right = rhs.value[i];}
+				tmp.value[i] = tmp.value[i] - (carry + val_right);
+				carry = (tmp.value[i] < 0);
+				if (carry) {
+					tmp.value[i] += BASE;
+				}
+				val_right = 0;
+			}
+			tmp._sign = LongNum:: Sign:: POSITIVE;
+			tmp.remove_lead_zeros();
+			return tmp;
+		}
+		else {
+			return -(rhs - lhs);
+		}
+	}
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) { return ((-rhs) - (-lhs));}
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {	return -((-lhs) + rhs);}
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (lhs + (-rhs));}
+	if ((lhs.getSign() == LongNum:: Sign:: ZERO) && ( (rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: POSITIVE))) {return (-rhs);}
+	//Positive OR Negative - Zero
+	else {return lhs;}	
+	
 }

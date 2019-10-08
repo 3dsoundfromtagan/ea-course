@@ -4,9 +4,10 @@
 #include <cstdlib>
 
 #define N 11
-#define DEFAULT_EXAMPLE -2
+#define DEFAULT_EXAMPLE 1234567
 #define DEFAULT_UNSIGNED_EXAMPLE 1
-#define EX_STRING "-4"
+#define EX_STRING "1234567"
+
 using namespace std;
 int main () {
 	LongNum long_empty;
@@ -76,10 +77,12 @@ int main () {
 	
 	cerr << "long_ll + long_string is " << long_ll + long_string << endl;
 	
-	//unary minus check
-	LongNum tmp = long_ull;
-	tmp.printSign();
-	(-tmp).printSign();
+	cerr << endl;
+	
+	cerr << "long_ll - long_string is " << long_ll - long_string << endl;
+	
+	
+
 
 	free(my_char);
 	return 0;
