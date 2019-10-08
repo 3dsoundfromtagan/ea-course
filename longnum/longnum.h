@@ -91,23 +91,40 @@ public:
 	
 	LongNum operator+() const;
 	
+	friend LongNum operator+(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend LongNum operator + (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend LongNum operator + (const T &lhs, const LongNum &rhs);
+	
 	//Prefix increment
-	const friend LongNum operator++ (LongNum &rhs);
+	const friend LongNum& operator++ (LongNum &rhs);
 	
 	//Postfix increment
 	const friend LongNum operator++ (LongNum &rhs, int);
 	
-	friend LongNum operator+(const LongNum &lhs, const LongNum &rhs);
-	
-	
-	
-	
+	LongNum& operator += (const LongNum &rhs);
+	template < typename T >
+	LongNum& operator += (const T &rhs);
 	
 	LongNum operator-() const;
 	
 	friend LongNum operator-(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend LongNum operator - (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend LongNum operator - (const T &lhs, const LongNum &rhs);
 
+	//Prefix decrement
+	const friend LongNum& operator-- (LongNum &rhs);
+	
+	//Postfix decrement
+	const friend LongNum operator-- (LongNum &rhs, int);
 
+	LongNum& operator -= (const LongNum &rhs);
+	template < typename T >
+	LongNum& operator -= (const T &rhs);
+	
 private:
 	std:: vector<int> value;
 	Sign _sign;												
@@ -426,19 +443,39 @@ LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
 		return tmp;
 	}
 	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) { return -(-(lhs) + -(rhs));	}
-	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {	return (rhs - lhs);}
-	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (lhs - rhs);}
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {	return (rhs - (-lhs));}
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (rhs - (-lhs));}
 	if ((lhs.getSign() == LongNum:: Sign:: ZERO) && ( (rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: POSITIVE))) {return rhs;}
 	else {return lhs;}	
-
-	
 	
 }
 
-/*LongNum operator++ (LongNum &rhs) {
-	
+template < typename T >
+LongNum operator + (const LongNum &lhs, const T &rhs) {return (lhs + LongNum(rhs));}
+
+template < typename T >
+LongNum operator + (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) + rhs);}
+
+const LongNum& operator++ (LongNum &rhs) {
+	rhs = rhs + LongNum((int)1);
+	return rhs;
 }
-*/
+
+const LongNum operator++ (LongNum &rhs, int) {
+	LongNum tmp(rhs);
+	rhs = rhs + LongNum((int)1);
+	return tmp;
+}
+
+LongNum& LongNum:: operator += (const LongNum &rhs) {
+	return *this = (*this + rhs);
+}
+
+template < typename T >
+LongNum& LongNum:: operator += (const T &rhs) {
+	return *this = (*this + LongNum(rhs));
+}
+
 
 LongNum LongNum:: operator -() const{
 	LongNum tmp(*this);
@@ -485,6 +522,32 @@ LongNum operator -(const LongNum &lhs, const LongNum &rhs) {
 	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {return (lhs + (-rhs));}
 	if ((lhs.getSign() == LongNum:: Sign:: ZERO) && ( (rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: POSITIVE))) {return (-rhs);}
 	//Positive OR Negative - Zero
-	else {return lhs;}	
-	
+	else {return lhs;}		
 }
+
+template < typename T >
+LongNum operator - (const LongNum &lhs, const T &rhs) {return (lhs - LongNum(rhs));}
+
+template < typename T >
+LongNum operator - (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) - rhs);}
+
+const LongNum& operator-- (LongNum &rhs) {
+	rhs = rhs - LongNum((int)1);
+	return rhs;
+}
+
+const LongNum operator-- (LongNum &rhs, int) {
+	LongNum tmp(rhs);
+	rhs = rhs - LongNum((int)1);
+	return tmp;
+}
+
+LongNum& LongNum:: operator -= (const LongNum &rhs) {
+	return *this = (*this - rhs);
+}
+
+template < typename T >
+LongNum& LongNum:: operator -= (const T &rhs) {
+	return *this = (*this - LongNum(rhs));
+}
+
