@@ -18,7 +18,7 @@ class LongNum {
 public:
 	//Constructors and deconstructor
 	LongNum();
-//	LongNum(const LongNum &new_value);
+	LongNum(const LongNum &new_value);
 	LongNum(const unsigned long long &new_value);
 	LongNum(const long long &new_value);
 	LongNum(const int &new_value);
@@ -155,10 +155,10 @@ LongNum:: LongNum() {
 	_sign = ZERO;
 }
 
-/*LongNum:: LongNum(const LongNum &new_value) {
+LongNum:: LongNum(const LongNum &new_value) {
 	value = new_value.getValue();
 	_sign = new_value.getSign();
-}*/
+}
 
 LongNum:: LongNum(const unsigned long long &new_value) {
 	unsigned long long tmp = new_value;
@@ -338,7 +338,6 @@ bool operator < (const LongNum& lhs, const LongNum& rhs) {
 		if ((lhs.getSign() == LongNum:: Sign:: ZERO) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) return false;
 		
 		else {
-			(-rhs).printSign();//??
 			return ((-rhs) < (-lhs));
 		}
 
@@ -424,16 +423,19 @@ LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
 	
 }
 
-
-//Doesn't work correctly in 'return (-obj)' rows
+/*LongNum operator++ (LongNum &rhs) {
+	
+}
+*/
 LongNum LongNum:: operator -() const{
 	LongNum tmp(*this);
 
 	if (tmp.getSign() == LongNum:: Sign:: NEGATIVE) {
 		tmp._sign = LongNum:: Sign:: POSITIVE;
+		return tmp;
 	}
 	if (tmp.getSign() == LongNum:: Sign:: POSITIVE) {
 		 tmp._sign = LongNum:: Sign:: NEGATIVE;
+		 return tmp;
 	}
-	return tmp;
 }
