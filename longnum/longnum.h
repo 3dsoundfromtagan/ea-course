@@ -5,6 +5,7 @@
 #include <algorithm>
 
 //Each element contains 9 digits
+//Сыпется при изменении. Причины не выяснил
 #define BASE 1000000000													
 
 //
@@ -137,6 +138,16 @@ public:
 	
 	LongNum common_mply(const LongNum &lhs, const LongNum &rhs);
 	LongNum karatsuba_mply(const LongNum &lhs, const LongNum &rhs);
+	
+	//BASE multiplication
+	void shift_right();
+	
+	//Naive div using binary search
+	friend LongNum operator/(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend LongNum operator / (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend LongNum operator / (const T &lhs, const LongNum &rhs);
 	
 private:
 	std:: vector<int> value;
@@ -370,7 +381,7 @@ bool operator < (const LongNum& lhs, const LongNum& rhs) {
 		}
 		
 		if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && ((rhs.getSign() == LongNum:: Sign:: NEGATIVE) || (rhs.getSign() == LongNum:: Sign:: ZERO))){
-			return true;
+			return false;
 		}
 		
 		if (((lhs.getSign() == LongNum:: Sign:: NEGATIVE) || (lhs.getSign() == LongNum:: Sign:: ZERO)) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
@@ -628,3 +639,102 @@ LongNum operator * (const LongNum &lhs, const T &rhs) {return (lhs * LongNum(rhs
 
 template < typename T >
 LongNum operator * (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) * rhs);}
+
+
+void LongNum:: shift_right() {
+	if (this->value.size() == 0) {
+		this->value.push_back(0);
+		return;
+	}
+	
+	this->value.push_back(this->value[this->value.size() - 1]);
+	
+	for (long long i = this->value.size() - 2; i > 0; --i) {
+		this->value[i] = this->value[i - 1];		
+	}
+	
+	this->value[0] = 0;	
+}
+
+LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
+	if (rhs.getSign() == LongNum:: Sign:: ZERO) {
+		throw std:: runtime_error("divisor cannot be zero");
+	}
+	if (lhs.getSign() == LongNum:: Sign:: ZERO) {
+		return LongNum(0);
+	}
+	
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+		LongNum result, current;
+		result._sign = LongNum:: Sign:: POSITIVE;
+		result.value.resize(lhs.getSize());
+		
+		for (long long i = static_cast<long long>(lhs.getSize()) - 1; i >= 0; --i){
+			current.shift_right();
+			current.value[0] = lhs.value[i];
+			current.remove_lead_zeros();
+			current._sign = LongNum:: Sign:: POSITIVE;
+			/*std:: cerr << "before current = " << current << " , sign = ";
+			current.printSign();
+			std:: cerr << "\n";*/
+			//use bin search to find the maximum divisor
+			int ans = 0, left = 0, right = BASE;
+			LongNum tmp;
+			while(left <= right) {
+				int medium = (left + right) / 2;
+				tmp = rhs * medium;
+				/*std:: cerr << "rhs =  "<< rhs << " tmp =  "<< " " << tmp << "\n";
+				std:: cerr << "current =  " << current << " medium = " << medium << "\n";
+				std:: cerr << "left =  " << left << " right = " << right << "\n";
+				std:: cerr << "ans =  " << ans << "\n" ;
+				std:: cerr << "tmp <= LongNum(current)) ==  " << (tmp <= current) << "\n" ;
+				std:: cerr << "tmp sign =  ";
+				tmp.printSign(); 
+				std:: cerr << " current sign =  ";
+				current.printSign();
+				std:: cerr<< "\n" ;*/
+				if (tmp <= current) {
+					
+					ans = medium;
+					left = medium + 1;
+				}
+				else {
+					right = medium - 1;
+				}
+							//std::cerr << "right = "<< right << " medium = " << medium << "tmp = " << tmp<<"ans = " << ans << "\n";
+
+			}
+			
+			result.value[i] = ans;
+			current = current - rhs * ans;			
+			//std::cerr << "_____________\n" << "result[i] = " << ans << " current = " << current << "\n";
+		}
+		result.remove_lead_zeros();
+		/*std:: cerr << "result = " << result << "sign = ";
+		result.printSign();
+		std::cerr << "\n";*/
+		return result;
+	}
+	
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {
+		//std:: cerr << "-rhs = " << (-rhs) << "\n";
+		//(-rhs).printSign();
+		LongNum result = (lhs / (-rhs));
+		result._sign = LongNum:: Sign:: NEGATIVE;
+		return result;
+	}
+	
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+	//std:: cerr << "-rhs = " << (-rhs) << "\n";
+	//(-rhs).printSign();
+	LongNum result = ((-lhs) / rhs);
+	result._sign = LongNum:: Sign:: NEGATIVE;
+	return result;
+	}
+	
+	else {
+		LongNum result = ((-lhs) / (-rhs));
+		result._sign = LongNum:: Sign:: POSITIVE;
+		return result;
+	}
+}

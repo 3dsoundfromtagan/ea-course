@@ -4,11 +4,12 @@
 #include <cstdlib>
 
 #define N 11
-#define DEFAULT_EXAMPLE -4
-#define DEFAULT_UNSIGNED_EXAMPLE 1
-#define EX_STRING "2"
+#define DEFAULT_EXAMPLE -10
+#define DEFAULT_UNSIGNED_EXAMPLE 4
+#define EX_STRING "-5"
 
 using namespace std;
+
 int main () {
 	LongNum long_empty;
 	cerr << "long_empty = " << long_empty << endl;
@@ -114,6 +115,12 @@ int main () {
 	cerr << "long_ll * long_string is " << (long_ll * long_string) << endl;
 	cerr << "long_int * unsigned long long is " << (long_int * my_ull) << endl;
 	cerr << "unsigned long long * long_string is " << (my_ull * long_string) << endl;
+	
+	cerr << endl;
+	
+	cerr << "long_ll / long_string is " << (long_ll / long_string) << endl;
+	//cerr << "long_int / unsigned long long is " << (long_int / my_ull) << endl;
+	//cerr << "unsigned long long / long_string is " << (my_ull / long_string) << endl;
 	
 	cerr << endl;
 	
