@@ -5,8 +5,8 @@
 
 #define N 11
 #define DEFAULT_EXAMPLE 1
-#define DEFAULT_UNSIGNED_EXAMPLE 0
-#define EX_STRING "-5"
+#define DEFAULT_UNSIGNED_EXAMPLE 13564798
+#define EX_STRING "112"
 
 using namespace std;
 int main () {
@@ -100,7 +100,7 @@ int main () {
 	cerr << endl;
 	
 	cerr << "long_ll prefix -- is " << --long_ll << endl;
-	cerr << long_int << "long_int postfix -- is " << long_int-- << endl;
+	cerr << "long_int postfix -- is " << long_int-- << endl;
 
 	cerr << endl;
 	
@@ -109,6 +109,13 @@ int main () {
 	long_int -= my_string;
 	cerr <<"long_int -= my_string is " << long_int << endl;
 	
+	cerr << endl;
+	
+	cerr << "long_ull * long_string is " << (long_ull * long_string) << endl;
+	//cerr << "long_int * unsigned long long is " << (long_int * my_ull) << endl;
+	//cerr << "unsigned long long * long_string is " << (my_ull * long_string) << endl;
+	
+	cerr << endl;
 	
 	free(my_char);
 	return 0;

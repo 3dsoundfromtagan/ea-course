@@ -7,6 +7,9 @@
 //Each element contains 9 digits
 #define BASE 1000000000													
 
+//
+#define KARATSUBA_OPTIMAL 1
+
 class LongNum {
 	
 	enum Sign {
@@ -124,6 +127,16 @@ public:
 	LongNum& operator -= (const LongNum &rhs);
 	template < typename T >
 	LongNum& operator -= (const T &rhs);
+	
+	
+	friend LongNum operator*(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend LongNum operator * (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend LongNum operator * (const T &lhs, const LongNum &rhs);
+	
+	LongNum common_mply(const LongNum &lhs, const LongNum &rhs);
+	LongNum karatsuba_mply(const LongNum &lhs, const LongNum &rhs);
 	
 private:
 	std:: vector<int> value;
@@ -551,3 +564,44 @@ LongNum& LongNum:: operator -= (const T &rhs) {
 	return *this = (*this - LongNum(rhs));
 }
 
+LongNum LongNum:: common_mply(const LongNum& lhs, const LongNum& rhs) {
+	this->_sign = LongNum:: Sign:: POSITIVE;
+	long long lhs_size = lhs.getSize();
+	long long rhs_size = rhs.getSize();
+	
+	this->value.resize(lhs_size + rhs_size);
+	for (long long i = 0; i < lhs_size; ++i) {
+		long long carry = 0;
+		for (long long j = 0; j < rhs_size || carry != 0; ++j) {
+			//Не сразу в ответ, ибо мб переполнение. И простите за тернарный оператор
+			long long cur = this->value[i + j] + carry + (long long)lhs.value[i] * (j < rhs_size ? rhs.value[j] : 0);
+			this->value[i + j] = static_cast<int>(cur % BASE);
+			carry = static_cast<int>(cur / BASE);
+		}
+		this->value[i + rhs_size] += carry;
+	}
+	this->remove_lead_zeros();
+	return *this;
+}
+
+LongNum LongNum:: karatsuba_mply(const LongNum& lhs, const LongNum& rhs) {
+	LongNum tmp_lhs = lhs;
+	LongNum tmp_rhs = rhs;
+	
+	long long k = std:: max(lhs.getSize(), rhs.getSize()) / 2 + 1;
+	tmp_lhs.value.resize(k, 0);
+	
+	
+	return *this;
+}
+
+LongNum operator *(const LongNum &lhs, const LongNum &rhs) {
+	if ((lhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: ZERO)) { return LongNum(0);}
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) || (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+		LongNum tmp;
+		tmp.common_mply(lhs, rhs);
+		return tmp;
+	}
+	
+	
+}
