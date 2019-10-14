@@ -4,9 +4,9 @@
 #include <cstdlib>
 
 #define N 11
-#define DEFAULT_EXAMPLE 1
-#define DEFAULT_UNSIGNED_EXAMPLE 13564798
-#define EX_STRING "112"
+#define DEFAULT_EXAMPLE -4
+#define DEFAULT_UNSIGNED_EXAMPLE 1
+#define EX_STRING "2"
 
 using namespace std;
 int main () {
@@ -111,11 +111,13 @@ int main () {
 	
 	cerr << endl;
 	
-	cerr << "long_ull * long_string is " << (long_ull * long_string) << endl;
-	//cerr << "long_int * unsigned long long is " << (long_int * my_ull) << endl;
-	//cerr << "unsigned long long * long_string is " << (my_ull * long_string) << endl;
+	cerr << "long_ll * long_string is " << (long_ll * long_string) << endl;
+	cerr << "long_int * unsigned long long is " << (long_int * my_ull) << endl;
+	cerr << "unsigned long long * long_string is " << (my_ull * long_string) << endl;
 	
 	cerr << endl;
+	
+	
 	
 	free(my_char);
 	return 0;

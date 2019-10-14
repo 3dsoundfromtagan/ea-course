@@ -584,7 +584,7 @@ LongNum LongNum:: common_mply(const LongNum& lhs, const LongNum& rhs) {
 	return *this;
 }
 
-LongNum LongNum:: karatsuba_mply(const LongNum& lhs, const LongNum& rhs) {
+/*LongNum LongNum:: karatsuba_mply(const LongNum& lhs, const LongNum& rhs) {
 	LongNum tmp_lhs = lhs;
 	LongNum tmp_rhs = rhs;
 	
@@ -593,15 +593,38 @@ LongNum LongNum:: karatsuba_mply(const LongNum& lhs, const LongNum& rhs) {
 	
 	
 	return *this;
-}
+}*/
 
+//After (in case :)) Karatsuba realization change common_mply to karatsuba_mply
 LongNum operator *(const LongNum &lhs, const LongNum &rhs) {
 	if ((lhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: ZERO)) { return LongNum(0);}
-	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) || (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
-		LongNum tmp;
-		tmp.common_mply(lhs, rhs);
-		return tmp;
+	LongNum tmp;
+	
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+		tmp.common_mply(lhs, rhs);	
+		return tmp;	
 	}
 	
+	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
+		tmp.common_mply((-lhs), rhs);
+		tmp._sign = LongNum:: Sign:: NEGATIVE;
+		return tmp;		
+	}
 	
+	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {
+		tmp.common_mply(lhs, (-rhs));
+		tmp._sign = LongNum:: Sign:: NEGATIVE;
+		return tmp;		
+	}
+	
+	else {
+		tmp.common_mply((-lhs), (-rhs));		
+	}
+	return tmp;
 }
+
+template < typename T >
+LongNum operator * (const LongNum &lhs, const T &rhs) {return (lhs * LongNum(rhs));}
+
+template < typename T >
+LongNum operator * (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) * rhs);}
