@@ -56,6 +56,8 @@ public:
 	
 	friend std:: ostream& operator << (std:: ostream &os, const LongNum &longnum);
 	
+	friend LongNum abs(const LongNum rhs);
+	
 	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
 	template < typename T >
 	friend bool operator == (const LongNum &lhs, const T &rhs);
@@ -308,6 +310,13 @@ std:: ostream& operator << (std:: ostream &os, const LongNum &rhs) {
 	}
 	return os;
 }
+
+LongNum abs(const LongNum rhs) {
+	if (rhs >= 0) return rhs;
+	else return (-rhs);
+}
+
+
 
 bool operator == (const LongNum &lhs, const LongNum &rhs) {
 	
@@ -664,6 +673,9 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 		return LongNum(0);
 	}
 	
+	if (abs(lhs) < abs(rhs)) {
+		return LongNum(0);
+	}
 	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
 		LongNum result, current;
 		result._sign = LongNum:: Sign:: POSITIVE;
@@ -710,6 +722,9 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 			//std::cerr << "_____________\n" << "result[i] = " << ans << " current = " << current << "\n";
 		}
 		result.remove_lead_zeros();
+		/*if (result.value.empty() || (result.value.size() == 1 && result.value[0] == 0)) {
+			result._sign = LongNum:: Sign:: ZERO;
+		}*/
 		/*std:: cerr << "result = " << result << "sign = ";
 		result.printSign();
 		std::cerr << "\n";*/
@@ -735,6 +750,9 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 	else {
 		LongNum result = ((-lhs) / (-rhs));
 		result._sign = LongNum:: Sign:: POSITIVE;
+		if (result.value.empty() || (result.value.size() == 1 && result.value[0] == 0)) {
+			result._sign = LongNum:: Sign:: ZERO;
+		}
 		return result;
 	}
 }

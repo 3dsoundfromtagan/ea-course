@@ -4,9 +4,9 @@
 #include <cstdlib>
 
 #define N 11
-#define DEFAULT_EXAMPLE -10
+#define DEFAULT_EXAMPLE -50
 #define DEFAULT_UNSIGNED_EXAMPLE 4
-#define EX_STRING "-5"
+#define EX_STRING "-46"
 
 using namespace std;
 
