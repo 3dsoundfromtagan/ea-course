@@ -11,15 +11,16 @@
 //
 #define KARATSUBA_OPTIMAL 1
 
-class LongNum {
+class LongNum {	
 	
+public:
 	enum Sign {
 		POSITIVE,
 		NEGATIVE,
 		ZERO,
-	};	
-	
-public:
+	};
+
+
 	//Constructors and deconstructor
 	LongNum();
 	LongNum(const LongNum &new_value);
@@ -52,8 +53,9 @@ public:
 	
 	void remove_lead_zeros();
 	
+	//Printing methods
 	void printLN();
-	
+	operator std::string() const;
 	friend std:: ostream& operator << (std:: ostream &os, const LongNum &longnum);
 	
 	friend LongNum abs(const LongNum rhs);
@@ -138,6 +140,10 @@ public:
 	template < typename T >
 	friend LongNum operator * (const T &lhs, const LongNum &rhs);
 	
+	LongNum& operator *= (const LongNum &rhs);
+	template < typename T >
+	LongNum& operator *= (const T &rhs);
+	
 	LongNum common_mply(const LongNum &lhs, const LongNum &rhs);
 	LongNum karatsuba_mply(const LongNum &lhs, const LongNum &rhs);
 	
@@ -174,7 +180,7 @@ void LongNum:: Init_Num(unsigned long long tmp, T base) {
 }
 
 void LongNum:: Init_Str(std:: string tmp) {							
-	if (!tmp.length() || (tmp.length() == 1 && tmp[0] == '0')) {
+	if (!tmp.length() || (tmp.length() == 1 && tmp[0] == '0') || (tmp.length() == 2 && tmp[0] == '-' && tmp[1] == '0')) {
 		_sign = ZERO;
 		value.clear();
 	}
@@ -278,7 +284,7 @@ void LongNum:: remove_lead_zeros () {
 	}
 }
 	
-/*void LongNum:: printLN() {
+void LongNum:: printLN() {
 	if (_sign == LongNum:: Sign::NEGATIVE) {
 		std:: cout << "-";
 	}
@@ -292,7 +298,13 @@ void LongNum:: remove_lead_zeros () {
 		printf ("%09d", getValue()[i]);
 	}
 	return;
-}*/
+}
+
+LongNum::operator std::string() const {
+        std::stringstream ss;
+        ss << *this;
+        return ss.str();
+}
 
 std:: ostream& operator << (std:: ostream &os, const LongNum &rhs) {
 	if (rhs.getSign() == LongNum:: Sign:: NEGATIVE) {
@@ -648,6 +660,16 @@ LongNum operator * (const LongNum &lhs, const T &rhs) {return (lhs * LongNum(rhs
 
 template < typename T >
 LongNum operator * (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) * rhs);}
+
+LongNum& LongNum:: operator *= (const LongNum &rhs) {
+	return *this = (*this * rhs);
+}
+
+template < typename T >
+LongNum& LongNum:: operator *= (const T &rhs) {
+	return *this = (*this * LongNum(rhs));
+}
+
 
 
 void LongNum:: shift_right() {

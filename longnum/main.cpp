@@ -1,9 +1,28 @@
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 #include "longnum.h"
-#include <cstdlib>
+#include "Testlib1.h"
+#include "test.h"
 
-#define N 11
+
+int main()
+{
+	/*unsigned long long my_ull = 1234567890;
+	std:: string my_string = "1234567890", long_string;
+	LongNum long1(my_ull);
+	std::cout << "before: " << long1 << std:: endl;
+	std:: stringstream ss;
+	ss << long1;
+	//ss >> long_string;
+	std::cout << "after: " << long_string << std:: endl;*/
+	TestAll();
+    return 0;
+}
+
+
+/*#define N 11
 #define DEFAULT_EXAMPLE -50
 #define DEFAULT_UNSIGNED_EXAMPLE 4
 #define EX_STRING "-46"
@@ -129,3 +148,4 @@ int main () {
 	free(my_char);
 	return 0;
 }
+*/
