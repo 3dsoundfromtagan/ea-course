@@ -157,6 +157,20 @@ public:
 	template < typename T >
 	friend LongNum operator / (const T &lhs, const LongNum &rhs);
 	
+	LongNum& operator /= (const LongNum &rhs);
+	template < typename T >
+	LongNum& operator /= (const T &rhs);
+	
+	//Attention! It can be negative because std C++ operator% can
+	friend LongNum operator%(const LongNum &lhs, const LongNum &rhs);
+	template < typename T >
+	friend LongNum operator % (const LongNum &lhs, const T &rhs);
+	template < typename T >
+	friend LongNum operator % (const T &lhs, const LongNum &rhs);
+	
+	LongNum& operator %= (const LongNum &rhs);
+	template < typename T >
+	LongNum& operator %= (const T &rhs);
 private:
 	std:: vector<int> value;
 	Sign _sign;												
@@ -392,7 +406,7 @@ bool operator < (const LongNum& lhs, const LongNum& rhs) {
 				return (lhs.getSize() < rhs.getSize());
 			}
 			else {
-				for (long long i = 0; i < lhs.getSize(); ++i) {
+				for (long long i = lhs.getSize() - 1; i >= 0 ; --i) {
 					if (lhs.value[i] != rhs.value[i]) {
 						return (lhs.value[i] < rhs.value[i]);
 					}
@@ -741,7 +755,7 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 			
 			result.value[i] = ans;
 			current = current - rhs * ans;			
-			//std::cerr << "_____________\n" << "result[i] = " << ans << " current = " << current << "\n";
+			//std::cerr << "_____________\n" << "result["<<i<<"] = " << result.value[i] << " current = " << current << "\n";
 		}
 		result.remove_lead_zeros();
 		/*if (result.value.empty() || (result.value.size() == 1 && result.value[0] == 0)) {
@@ -777,4 +791,40 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 		}
 		return result;
 	}
+}
+
+template < typename T >
+LongNum operator / (const LongNum &lhs, const T &rhs) {return (lhs / LongNum(rhs));}
+
+template < typename T >
+LongNum operator / (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) / rhs);}
+
+LongNum& LongNum:: operator /= (const LongNum &rhs) {
+	return *this = (*this / rhs);
+}
+
+template < typename T >
+LongNum& LongNum:: operator /= (const T &rhs) {
+	return *this = (*this / LongNum(rhs));
+}
+
+
+LongNum operator %(const LongNum &lhs, const LongNum &rhs) {
+	LongNum result = lhs - (lhs / rhs) * rhs;
+	return result;
+}
+
+template < typename T >
+LongNum operator % (const LongNum &lhs, const T &rhs) {return (lhs % LongNum(rhs));}
+
+template < typename T >
+LongNum operator % (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) % rhs);}
+
+LongNum& LongNum:: operator %= (const LongNum &rhs) {
+	return *this = (*this % rhs);
+}
+
+template < typename T >
+LongNum& LongNum:: operator %= (const T &rhs) {
+	return *this = (*this % LongNum(rhs));
 }

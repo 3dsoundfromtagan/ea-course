@@ -199,14 +199,233 @@ void Test5() {
 		ASSERT_MSG(((long1 + long2) == LongNum(l1 + l2)) && ((long2 + long1) == LongNum(l1 + l2)), "-1111111111 + -2222222222 = -3333333333");
 		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
 	}
-	
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long1 += long2) == LongNum(l1 + l2), "-1111111111 += -2222222222 = -3333333333");
+		ASSERT_MSG(long1 == LongNum(l1 + l2) && long2 == LongNum(l2), "Agrument1 change and argument 2 did not change");		
+	}
+	{
+		LongNum long1(1234567890);
+		ASSERT_MSG((++long1) == LongNum(1234567891), "prefix ++ test");
+		ASSERT_MSG(long1 == LongNum(1234567891), "prefix ++ test");	
+	}
+	{
+		LongNum long1(1234567890);
+		ASSERT_MSG((long1++) == LongNum(1234567890), "postfix ++ test");
+		ASSERT_MSG(long1 == LongNum(1234567891), "postfix ++ test");	
+	}	
 }
 
 
+void Test6() {
+	{
+		LongNum long1("001234567890");
+		ASSERT_MSG((-long1).getSign() == LongNum:: Sign::NEGATIVE, "sign = NEGATIVE");		
+	}
+	{
+		LongNum long1("0");
+		ASSERT_MSG((-long1).getSign() == LongNum:: Sign::ZERO, "sign = ZERO");		
+	}
+	{
+		LongNum long1;
+		ASSERT_MSG((-long1).getSign() == LongNum:: Sign::ZERO, "sign = ZERO");		
+	}
+	{
+		LongNum long1("-0");
+		ASSERT_MSG((-long1).getSign() == LongNum:: Sign::ZERO, "sign = ZERO");		
+	}
+	{
+		LongNum long1(-1234567890);
+		ASSERT_MSG((-long1).getSign() == LongNum:: Sign::POSITIVE, "sign = POSITIVE");		
+	}
+	{
+		LongNum long1(-1234567890), long2(1234567890);
+		long long l = -1234567890;
+		l *= 2;
+		ASSERT_MSG(((long1 - long2) == LongNum(l)) && ((long2 - long1) == LongNum(-l)), "-1234567890 - 1234567890");
+		ASSERT_MSG(long1 == LongNum(-1234567890) && long2 == LongNum(1234567890), "Agruments did not change");		
+	}
+	{
+		LongNum long1(-1234567890), long2(0);
+		ASSERT_MSG(((long1 - long2) == LongNum(-1234567890)) && ((long2 - long1) == LongNum(1234567890)), "-1234567890 - 0 = -1234567890");
+		ASSERT_MSG(long1 == LongNum(-1234567890) && long2 == LongNum(0), "Agruments did not change");		
+	}
+	{
+		long long l1 = -1111111111, l2 = -2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 - long2) == LongNum(l1 - l2)) && ((long2 - long1) == LongNum(l2 - l1)), "-1111111111 - -2222222222 = 1111111111");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 - long2) == LongNum(l1 - l2)) && ((long2 - long1) == LongNum(l2 - l1)), "1111111111 - 2222222222 = -1111111111");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}	
+	{
+		long long l1 = -12345678905, l2 = 97845632108;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 - long2) == LongNum(l1 - l2)) && ((long2 - long1) == LongNum(l2 - l1)), "-12345678905 -97845632108");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}	
+	{
+		long long l1 = 0;
+		int l2 = 0;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 - long2) == LongNum(l1 - l2)) && ((long2 - long1) == LongNum(l2 - l1)), "0-0=0");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long1 -= long2) == LongNum(l1 - l2), "1111111111 -= 2222222222 = -1111111111");
+		ASSERT_MSG(long1 == LongNum(l1 - l2) && long2 == LongNum(l2), "Agrument1 changed and argument 2 did not change");		
+	}
+	{
+		LongNum long1(1234567890);
+		ASSERT_MSG((--long1) == LongNum(1234567889), "prefix ++ test");
+		ASSERT_MSG(long1 == LongNum(1234567889), "prefix ++ test");	
+	}
+	{
+		LongNum long1(1234567890);
+		ASSERT_MSG((long1--) == LongNum(1234567890), "postfix ++ test");
+		ASSERT_MSG(long1 == LongNum(1234567889), "postfix ++ test");	
+	}	
+}
 
+void Test7() {
+	{
+		LongNum long1(-1234567890), long2(1234567890);
+		long long l = -1234567890;
+		l *= (-l);
+		ASSERT_MSG(((long1 * long2) == LongNum(l)) && ((long2 * long1) == LongNum(l)), "-1234567890 * 1234567890");
+		ASSERT_MSG(long1 == LongNum(-1234567890) && long2 == LongNum(1234567890), "Agruments did not change");		
+	}
+	{
+		LongNum long1(-1234567890), long2(0);
+		ASSERT_MSG(((long1 * long2) == LongNum(0)) && ((long2 * long1) == LongNum(0)), "-1234567890 * 0");
+		ASSERT_MSG(long1 == LongNum(-1234567890) && long2 == LongNum(0), "Agruments did not change");		
+	}
+	{
+		long long l1 = -1111111111, l2 = -2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 * long2) == LongNum(l1 * l2)) && ((long2 * long1) == LongNum(l2 * l1)), "-1111111111 * -2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 * long2) == LongNum(l1 * l2)) && ((long2 * long1) == LongNum(l2 * l1)), "1111111111 * 2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}	
+	{
+		long long l1 = -12345678905, l2 = 978;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 * long2) == LongNum(l1 * l2)) && ((long2 * long1) == LongNum(l2 * l1)), "-12345678905 * 97845632108");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}	
+	{
+		long long l1 = 0;
+		int l2 = 0;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 * long2) == LongNum(l1 * l2)) && ((long2 * long1) == LongNum(l2 - l1)), "0-0=0");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long1 *= long2) == LongNum(l1 * l2), "1111111111 *= 2222222222");
+		ASSERT_MSG(long1 == LongNum(l1 * l2) && long2 == LongNum(l2), "Agrument1 changed and argument 2 did not change");		
+	}
+}
 
+void Test8() {
+	{
+		LongNum long1(-1234567890), long2(1234567890);
+		long long l = -1234567890;
+		l /= (-l);
+		ASSERT_MSG(((long1 / long2) == LongNum(l)) && ((long2 / long1) == LongNum(l)), "-1234567890 / 1234567890");
+		ASSERT_MSG(long1 == LongNum(-1234567890) && long2 == LongNum(1234567890), "Agruments did not change");		
+	}
+	{
+		LongNum long1(-1234567890), long2(0);
+		try{
+			long1/long2;
+		}
+		catch(...) {
+		//And how to do it humanly?
+			ASSERT_MSG(1, "-1234567890 / 0");
+		}	
+		ASSERT_MSG((long2 / long1) == LongNum(0), "0 / -1234567890");
+		ASSERT_MSG(long1 == LongNum(-1234567890) && long2 == LongNum(0), "Agruments did not change");		
+	}
+	{
+		long long l1 = -1111111111, l2 = -2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 / long2) == LongNum(l1 / l2)) && ((long2 / long1) == LongNum(l2 / l1)), "-1111111111 / -2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 / long2) == LongNum(l1 / l2)) && ((long2 / long1) == LongNum(l2 / l1)), "1111111111 / 2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}	
+	{
+		long long l1 = -12345678905, l2 = 978;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG(((long1 / long2) == LongNum(l1 / l2)) && ((long2 / long1) == LongNum(l2 / l1)), "-12345678905 / 97845632108");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}	
+	{
+		long long l1 = 0;
+		int l2 = 0;
+		LongNum long1(l1), long2(l2);
+		try{
+			long1/long2;
+		}
+		catch(...) {
+		//And how to do it humanly?
+			ASSERT_MSG(1, "0 / 0");
+		}
+		try{
+			long2/long1;
+		}
+		catch(...) {
+		//And how to do it humanly?
+			ASSERT_MSG(1, "0 / 0");
+		}
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long1 /= long2) == LongNum(l1 / l2), "1111111111 /= 2222222222");
+		ASSERT_MSG(long1 == LongNum(l1 / l2) && long2 == LongNum(l2), "Agrument1 changed and argument 2 did not change");		
+	}
+}
 
-
+void Test9() {
+	{
+		long long l1 = -1111111111, l2 = -2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long1 % long2) == LongNum(l1 % l2), "-1111111111 % -2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = 1111111111, l2 = -2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long2 % long1) == LongNum(l2 % l1), "-1111111111 % -2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+	{
+		long long l1 = -1111111111, l2 = 2222222222;
+		LongNum long1(l1), long2(l2);
+		ASSERT_MSG((long2 % l1) == LongNum(l2 % l1), "-1111111111 % -2222222222");
+		ASSERT_MSG(long1 == LongNum(l1) && long2 == LongNum(l2), "Agruments did not change");		
+	}
+}
 
 
 
@@ -364,7 +583,10 @@ void TestAll() {
 	RUN_TEST_MSG(test, Test3, "Equality check");
 	RUN_TEST_MSG(test, Test4, "Comparison check");
 	RUN_TEST_MSG(test, Test5, "Summirizing check");
-//	RUN_TEST_MSG(test, Test6, "Difference check");
+	RUN_TEST_MSG(test, Test6, "Difference check");
+	RUN_TEST_MSG(test, Test7, "Multiply test");
+	RUN_TEST_MSG(test, Test8, "Division test");
+	RUN_TEST_MSG(test, Test9, "Remainder test");
 
 
    /* RUN_TEST_MSG(test, Test2, "Equality check");

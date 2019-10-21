@@ -6,17 +6,9 @@
 #include "Testlib1.h"
 #include "test.h"
 
-
+//Division problems!!!
 int main()
 {
-	/*unsigned long long my_ull = 1234567890;
-	std:: string my_string = "1234567890", long_string;
-	LongNum long1(my_ull);
-	std::cout << "before: " << long1 << std:: endl;
-	std:: stringstream ss;
-	ss << long1;
-	//ss >> long_string;
-	std::cout << "after: " << long_string << std:: endl;*/
 	TestAll();
     return 0;
 }
