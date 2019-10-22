@@ -58,7 +58,7 @@ public:
 	operator std::string() const;
 	friend std:: ostream& operator << (std:: ostream &os, const LongNum &longnum);
 	
-	friend LongNum abs(const LongNum rhs);
+	friend LongNum abs(const LongNum &rhs);
 	
 	friend bool operator == (const LongNum &lhs, const LongNum &rhs);
 	template < typename T >
@@ -346,7 +346,7 @@ std:: ostream& operator << (std:: ostream &os, const LongNum &rhs) {
 	return os;
 }
 
-LongNum abs(const LongNum rhs) {
+LongNum abs(const LongNum &rhs) {
 	if (rhs >= 0) return rhs;
 	else return (-rhs);
 }
@@ -642,18 +642,6 @@ LongNum LongNum:: common_mply(const LongNum& lhs, const LongNum& rhs) {
 	return *this;
 }
 
-/*LongNum LongNum:: karatsuba_mply(const LongNum& lhs, const LongNum& rhs) {
-	LongNum tmp_lhs = lhs;
-	LongNum tmp_rhs = rhs;
-	
-	long long k = std:: max(lhs.getSize(), rhs.getSize()) / 2 + 1;
-	tmp_lhs.value.resize(k, 0);
-	
-	
-	return *this;
-}*/
-
-//After (in case :)) Karatsuba realization change common_mply to karatsuba_mply
 LongNum operator *(const LongNum &lhs, const LongNum &rhs) {
 	if ((lhs.getSign() == LongNum:: Sign:: ZERO) || (rhs.getSign() == LongNum:: Sign:: ZERO)) { return LongNum(0);}
 	LongNum tmp;
@@ -734,25 +722,11 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 			current.value[0] = lhs.value[i];
 			current.remove_lead_zeros();
 			current._sign = LongNum:: Sign:: POSITIVE;
-			/*std:: cerr << "before current = " << current << " , sign = ";
-			current.printSign();
-			std:: cerr << "\n";*/
-			//use bin search to find the maximum divisor
 			int ans = 0, left = 0, right = BASE;
 			LongNum tmp;
 			while(left <= right) {
 				int medium = (left + right) / 2;
 				tmp = rhs * medium;
-				/*std:: cerr << "rhs =  "<< rhs << " tmp =  "<< " " << tmp << "\n";
-				std:: cerr << "current =  " << current << " medium = " << medium << "\n";
-				std:: cerr << "left =  " << left << " right = " << right << "\n";
-				std:: cerr << "ans =  " << ans << "\n" ;
-				std:: cerr << "tmp <= LongNum(current)) ==  " << (tmp <= current) << "\n" ;
-				std:: cerr << "tmp sign =  ";
-				tmp.printSign(); 
-				std:: cerr << " current sign =  ";
-				current.printSign();
-				std:: cerr<< "\n" ;*/
 				if (tmp <= current) {
 					
 					ans = medium;
@@ -761,35 +735,22 @@ LongNum operator /(const LongNum &lhs, const LongNum &rhs) {
 				else {
 					right = medium - 1;
 				}
-							//std::cerr << "right = "<< right << " medium = " << medium << "tmp = " << tmp<<"ans = " << ans << "\n";
-
 			}
 			
 			result.value[i] = ans;
 			current = current - rhs * ans;			
-			//std::cerr << "_____________\n" << "result["<<i<<"] = " << result.value[i] << " current = " << current << "\n";
 		}
 		result.remove_lead_zeros();
-		/*if (result.value.empty() || (result.value.size() == 1 && result.value[0] == 0)) {
-			result._sign = LongNum:: Sign:: ZERO;
-		}*/
-		/*std:: cerr << "result = " << result << "sign = ";
-		result.printSign();
-		std::cerr << "\n";*/
 		return result;
 	}
 	
 	if ((lhs.getSign() == LongNum:: Sign:: POSITIVE) && (rhs.getSign() == LongNum:: Sign:: NEGATIVE)) {
-		//std:: cerr << "-rhs = " << (-rhs) << "\n";
-		//(-rhs).printSign();
 		LongNum result = (lhs / (-rhs));
 		result._sign = LongNum:: Sign:: NEGATIVE;
 		return result;
 	}
 	
 	if ((lhs.getSign() == LongNum:: Sign:: NEGATIVE) && (rhs.getSign() == LongNum:: Sign:: POSITIVE)) {
-	//std:: cerr << "-rhs = " << (-rhs) << "\n";
-	//(-rhs).printSign();
 	LongNum result = ((-lhs) / rhs);
 	result._sign = LongNum:: Sign:: NEGATIVE;
 	return result;
@@ -850,7 +811,7 @@ bool LongNum::even() const {
         return !this->odd();
 }
 
-const LongNum LongNum::pow(LongNum n) const {
+const LongNum LongNum::pow(LongNum const n) const {
 	if ((n < 0) && (*this < 0)) throw std:: runtime_error("n and  src must be greater of equal to zero");
 	if (!n && !(*this)) return LongNum(1);
 	LongNum m = n;
@@ -865,7 +826,7 @@ const LongNum LongNum::pow(LongNum n) const {
 }
 
 template < typename T >
-const LongNum LongNum::pow(T n) const {
+const LongNum LongNum::pow(const T n) const {
 	return this->pow(LongNum(n));
 }
 
@@ -887,4 +848,4 @@ const LongNum LongNum:: sqrt(const int n) const {
         right = medium - 1;
     }
     return res;
-};
+}

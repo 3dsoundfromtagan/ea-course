@@ -1,0 +1,11 @@
+www.viva64.com/en/w	1	err	Help: The documentation for all analyzer warnings is available here: https://www.viva64.com/en/w/.
+/home/alex/files/proga/ea-course/longnum/longnum.h	372	warn	V560 A part of conditional expression is always false: rhs.value.empty().
+/home/alex/files/proga/ea-course/longnum/Testlib1.h	239	warn	V509 The 'throw' operator inside the destructor should be placed within the try..catch block. Raising exception inside the destructor is illegal.
+/home/alex/files/proga/ea-course/longnum/test.h	45	warn	V522 There might be dereferencing of a potential null pointer 'my_char'. Check lines: 45, 44.
+/home/alex/files/proga/ea-course/longnum/test.h	82	err	V501 There are identical sub-expressions to the left and to the right of the '&&' operator: (long1 == long2) && (long2 == long1)
+/home/alex/files/proga/ea-course/longnum/test.h	86	err	V501 There are identical sub-expressions to the left and to the right of the '&&' operator: !(long1 == long2) &&!(long2 == long1)
+/home/alex/files/proga/ea-course/longnum/test.h	90	err	V501 There are identical sub-expressions to the left and to the right of the '&&' operator: !(long1 == long2) &&!(long2 == long1)
+/home/alex/files/proga/ea-course/longnum/test.h	94	err	V501 There are identical sub-expressions to the left and to the right of the '&&' operator: (long1 != long2) && (long2 != long1)
+/home/alex/files/proga/ea-course/longnum/test.h	99	err	V501 There are identical sub-expressions to the left and to the right of the '&&' operator: (long1 != my_int) && (my_int != long1)
+/home/alex/files/proga/ea-course/longnum/longnum.h	238	warn	V730 Not all members of a class are initialized inside the constructor. Consider inspecting: _sign.
+/home/alex/files/proga/ea-course/longnum/longnum.h	257	warn	V730 Not all members of a class are initialized inside the constructor. Consider inspecting: _sign.
