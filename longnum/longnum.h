@@ -98,6 +98,7 @@ public:
 	
 	
 	LongNum operator+() const;
+	bool operator!() const;
 	
 	friend LongNum operator+(const LongNum &lhs, const LongNum &rhs);
 	template < typename T >
@@ -171,6 +172,14 @@ public:
 	LongNum& operator %= (const LongNum &rhs);
 	template < typename T >
 	LongNum& operator %= (const T &rhs);
+	
+	bool odd() const;
+	bool even() const;
+	const LongNum pow(const LongNum n) const;
+	template < typename T >
+	const LongNum pow(const T n) const;
+	
+	const LongNum sqrt(const int n) const;
 private:
 	std:: vector<int> value;
 	Sign _sign;												
@@ -475,6 +484,9 @@ bool operator >= (const T &lhs, const LongNum &rhs) {return (LongNum(lhs) >= rhs
 
 LongNum LongNum:: operator +() const{
 	return LongNum(*this);
+}
+bool LongNum:: operator !() const{
+	return (*this == 0);
 }
 
 LongNum operator +(const LongNum &lhs, const LongNum &rhs) {
@@ -828,3 +840,51 @@ template < typename T >
 LongNum& LongNum:: operator %= (const T &rhs) {
 	return *this = (*this % LongNum(rhs));
 }
+
+bool LongNum::odd() const {
+        if (this->value.size() == 0) return false;
+        return this->value[0] & 1;
+}
+
+bool LongNum::even() const {
+        return !this->odd();
+}
+
+const LongNum LongNum::pow(LongNum n) const {
+	if ((n < 0) && (*this < 0)) throw std:: runtime_error("n and  src must be greater of equal to zero");
+	if (!n && !(*this)) return LongNum(1);
+	LongNum m = n;
+	LongNum a(*this), result(1);
+	while (m != 0) {
+			if (m.odd()) result *= a;
+			a *= a;
+			m /= 2;
+	}
+
+	return result;
+}
+
+template < typename T >
+const LongNum LongNum::pow(T n) const {
+	return this->pow(LongNum(n));
+}
+
+const LongNum LongNum:: sqrt(const int n) const {
+	if (n <= 0)  throw std:: runtime_error("the degree of the root must be greater of equal to zero");
+	if (this->getSign() == LongNum:: Sign:: NEGATIVE)  throw std:: runtime_error("src must be greater of equal to zero");
+	if (this->getSign() == LongNum:: Sign:: ZERO) return LongNum(0);
+	LongNum left , right = *this;
+    LongNum res;
+    while (left <= right)
+    {
+      LongNum medium = (left + right)/2;
+      if (medium.pow(n) <= *this)
+      {
+        res = medium;
+        left = medium + 1;
+      }
+      else
+        right = medium - 1;
+    }
+    return res;
+};

@@ -6,7 +6,6 @@
 #include "Testlib1.h"
 #include "test.h"
 
-//Division problems!!!
 int main()
 {
 	TestAll();
